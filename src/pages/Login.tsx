@@ -107,6 +107,7 @@ export const Login: React.FC = () => {
       const response = await fetch(`${API_URL}/auth/firebase-login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           email: userFirebase.email,
           fullName: userFirebase.displayName || userFirebase.email.split('@')[0],
@@ -189,6 +190,7 @@ export const Login: React.FC = () => {
       const response = await fetch(`${API_URL}/auth/firebase-login`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
+        credentials: 'include',
         body: JSON.stringify({
           phone: phone,
           email: userFirebase.email || `${phone}@nurselink.phone`,
