@@ -1,0 +1,102 @@
+/* NurseLink & Vyasa Premium Design System */
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+  /* Color Palette */
+  --bg-primary: #020d20;        /* Sleek Deep Navy dark background */
+  --bg-card: #ffffff;           /* Crisp clean white for cards */
+  --bg-accent: #071735;         /* Matching dark accent navy */
+  
+  --primary: #4a7cff;           /* High contrast vibrant royal blue */
+  --primary-hover: #3566e6;     /* Deep action hover blue */
+  --primary-light: #eef2ff;     /* Extra soft blue background */
+  
+  --text-main: #0c1a30;         /* Deep high-contrast dark text */
+  --text-muted: #5e6e85;        /* Balanced grey text */
+  --text-white: #ffffff;
+  
+  --border-color: #e2e8f0;      /* Slate grey borders */
+  --border-active: #4a7cff;
+  
+  --success: #10b981;           /* Clinical emerald success */
+  --error: #f43f5e;             /* Soft red/rose error */
+  --warning: #f59e0b;           /* Bright warning amber */
+  --info: #06b6d4;              /* Cyan info */
+  
+  /* Fonts */
+  --font-display: 'Outfit', 'Inter', sans-serif;
+  --font-body: 'Inter', sans-serif;
+  
+  /* Layout specs */
+  --radius-lg: 20px;
+  --radius-md: 12px;
+  --radius-sm: 8px;
+  
+  --shadow-lg: 0 10px 30px rgba(0, 0, 0, 0.15);
+  --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.05);
+  --transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background: radial-gradient(circle at 50% 50%, #061633 0%, #020917 100%);
+  color: var(--text-white);
+  font-family: var(--font-body);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  min-height: 100vh;
+  overflow-x: hidden;
+  position: relative;
+}
+
+body::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: 
+    radial-gradient(circle at 80% 20%, rgba(74, 124, 255, 0.12) 0%, transparent 50%),
+    radial-gradient(circle at 10% 80%, rgba(16, 185, 129, 0.05) 0%, transparent 40%);
+  pointer-events: none;
+  z-index: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-display);
+  font-weight: 600;
+  color: inherit;
+}
+
+/* Micro-Animations and Helper Utilities */
+.animate-fade-in {
+  animation: fadeIn 0.4s ease-out forwards;
+}
+
+.animate-slide-up {
+  animation: slideUp 0.4s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Glassmorphism helpers */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.03);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
