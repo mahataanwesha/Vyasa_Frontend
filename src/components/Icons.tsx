@@ -44,7 +44,7 @@ export const VyasaLogo: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
 
     {/* Stylized Tapered V-Collar Chestpiece */}
     <path
-      d="M 62,95 C 62,88 72,88 72,95 C 76,115 85,132 100,132 C 115,132 124,115 128,95 C 128,88 138,88 138,95 C 142,125 125,165 100,165 C 75,165 58,125 62,95 Z"
+      d="M 62,95 C 62,88 72,88 72,95 C 78,112 90,125 100,125 C 110,125 122,112 128,95 C 128,88 138,88 138,95 C 132,130 112,172 100,172 C 88,172 68,130 62,95 Z"
       fill="#4ea2ff"
     />
   </svg>
@@ -199,7 +199,7 @@ export const WatermarkStethoscope: React.FC<React.SVGProps<SVGSVGElement>> = (pr
 
     {/* Stylized Tapered V-Collar Chestpiece */}
     <path
-      d="M 62,95 C 62,88 72,88 72,95 C 76,115 85,132 100,132 C 115,132 124,115 128,95 C 128,88 138,88 138,95 C 142,125 125,165 100,165 C 75,165 58,125 62,95 Z"
+      d="M 62,95 C 62,88 72,88 72,95 C 78,112 90,125 100,125 C 110,125 122,112 128,95 C 128,88 138,88 138,95 C 132,130 112,172 100,172 C 88,172 68,130 62,95 Z"
       fill="#4a7cff"
     />
   </svg>
