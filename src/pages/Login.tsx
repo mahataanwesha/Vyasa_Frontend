@@ -67,7 +67,7 @@ export const Login: React.FC = () => {
     try {
       if (authMode === 'login') {
         await login({ email, password });
-        addToast('Welcome back to NurseLink!', 'success');
+        addToast('Welcome back to VYASA!', 'success');
       } else {
         if (!fullName) {
           addToast('Full name is required for registration.', 'warning');

@@ -110,8 +110,8 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
           
           <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
             <VyasaLogo style={{ width: '36px', height: '36px' }} />
-            <span style={{ fontSize: '20px', fontWeight: 800, color: '#020d20', fontFamily: 'Outfit, sans-serif' }}>
-              NurseLink
+            <span style={{ fontSize: '20px', fontWeight: 800, color: '#020d20', fontFamily: 'Outfit, sans-serif', letterSpacing: '0.5px' }}>
+              VYASA
             </span>
           </div>
         </div>

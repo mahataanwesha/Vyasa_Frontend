@@ -5,29 +5,47 @@ export const VyasaLogo: React.FC<React.SVGProps<SVGSVGElement>> = (props) => (
   <svg
     width="56"
     height="56"
-    viewBox="0 0 100 100"
+    viewBox="0 0 200 200"
     fill="none"
     xmlns="http://www.w3.org/2000/svg"
     {...props}
   >
+    {/* Stethoscope Earpieces */}
+    <rect x="47" y="27" width="22" height="10" rx="5" fill="#1e6fd9" />
+    <rect x="131" y="27" width="22" height="10" rx="5" fill="#1e6fd9" />
+    
+    {/* Stethoscope Tubes */}
     <path
-      d="M50 85C50 85 80 60 80 38C80 23.5 68.5 12 54 12C47.5 12 42.5 14.5 40 18.5"
-      stroke="#4a7cff"
+      d="M 60,32 C 30,32 30,70 65,95"
+      stroke="#1e6fd9"
       strokeWidth="6"
       strokeLinecap="round"
+      fill="none"
     />
     <path
-      d="M50 85C50 85 20 60 20 38C20 23.5 31.5 12 46 12C52.5 12 57.5 14.5 60 18.5"
-      stroke="#ffffff"
+      d="M 140,32 C 170,32 170,70 135,95"
+      stroke="#1e6fd9"
       strokeWidth="6"
       strokeLinecap="round"
+      fill="none"
     />
-    <circle cx="50" cy="35" r="10" stroke="#4a7cff" strokeWidth="6" />
+
+    {/* Human Silhouette (Head and Torso) */}
+    {/* Head */}
     <path
-      d="M38 52C42.5 58 57.5 58 62 52"
-      stroke="#ffffff"
-      strokeWidth="5"
-      strokeLinecap="round"
+      d="M 100,42 C 111,42 120,51 120,62 C 120,73 111,82 100,82 C 89,82 80,73 80,62 C 80,51 89,42 100,42 Z"
+      fill="#1e6fd9"
+    />
+    {/* Torso */}
+    <path
+      d="M 94,80 L 94,89 C 83,93 72,102 70,115 L 130,115 C 128,102 117,93 106,89 L 106,80 Z"
+      fill="#1e6fd9"
+    />
+
+    {/* Stylized Tapered V-Collar Chestpiece */}
+    <path
+      d="M 62,95 C 62,88 72,88 72,95 C 76,115 85,132 100,132 C 115,132 124,115 128,95 C 128,88 138,88 138,95 C 142,125 125,165 100,165 C 75,165 58,125 62,95 Z"
+      fill="#4ea2ff"
     />
   </svg>
 );
@@ -147,18 +165,42 @@ export const WatermarkStethoscope: React.FC<React.SVGProps<SVGSVGElement>> = (pr
     style={{ opacity: 0.06, pointerEvents: 'none' }}
     {...props}
   >
+    {/* Stethoscope Earpieces */}
+    <rect x="47" y="27" width="22" height="10" rx="5" fill="#4a7cff" />
+    <rect x="131" y="27" width="22" height="10" rx="5" fill="#4a7cff" />
+    
+    {/* Stethoscope Tubes */}
     <path
-      d="M100 170C100 170 160 120 160 76C160 47 137 24 108 24C95 24 85 29 80 37"
+      d="M 60,32 C 30,32 30,70 65,95"
       stroke="#4a7cff"
-      strokeWidth="8"
+      strokeWidth="6"
       strokeLinecap="round"
+      fill="none"
     />
     <path
-      d="M100 170C100 170 40 120 40 76C40 47 63 24 92 24C105 24 115 29 120 37"
+      d="M 140,32 C 170,32 170,70 135,95"
       stroke="#4a7cff"
-      strokeWidth="8"
+      strokeWidth="6"
       strokeLinecap="round"
+      fill="none"
     />
-    <circle cx="100" cy="70" r="20" stroke="#4a7cff" strokeWidth="8" />
+
+    {/* Human Silhouette (Head and Torso) */}
+    {/* Head */}
+    <path
+      d="M 100,42 C 111,42 120,51 120,62 C 120,73 111,82 100,82 C 89,82 80,73 80,62 C 80,51 89,42 100,42 Z"
+      fill="#4a7cff"
+    />
+    {/* Torso */}
+    <path
+      d="M 94,80 L 94,89 C 83,93 72,102 70,115 L 130,115 C 128,102 117,93 106,89 L 106,80 Z"
+      fill="#4a7cff"
+    />
+
+    {/* Stylized Tapered V-Collar Chestpiece */}
+    <path
+      d="M 62,95 C 62,88 72,88 72,95 C 76,115 85,132 100,132 C 115,132 124,115 128,95 C 128,88 138,88 138,95 C 142,125 125,165 100,165 C 75,165 58,125 62,95 Z"
+      fill="#4a7cff"
+    />
   </svg>
 );
