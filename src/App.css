@@ -198,3 +198,64 @@
   }
 }
 
+/* Global Mobile Responsiveness Tweaks */
+@media (max-width: 768px) {
+  /* Automatically stack inline grids on mobile */
+  div[style*="display: grid"],
+  div[style*="display:grid"] {
+    grid-template-columns: 1fr !important;
+    gap: 12px !important;
+  }
+
+  /* Make sure inputs and controls are full-width and fit correctly */
+  input, select, textarea {
+    width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Make setup wizard wrapper responsive and padded correctly */
+  .animate-slide-up {
+    padding: 20px 16px !important;
+    border-radius: 16px !important;
+    margin: 8px !important;
+    width: calc(100% - 16px) !important;
+    max-width: 100% !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Smaller header text for step wizard steps */
+  .animate-slide-up h2 {
+    font-size: 18px !important;
+    margin-bottom: 12px !important;
+  }
+
+  /* Step lines and nodes styling adjustments for narrow viewports */
+  .animate-slide-up div[style*="max-width: 400px"] {
+    max-width: 280px !important;
+  }
+
+  /* Absolute logout button positioned relatively to flow naturally on mobile */
+  button[style*="position: absolute"][style*="top: 24px"][style*="right: 24px"] {
+    position: static !important;
+    margin-top: 10px !important;
+    margin-bottom: 20px !important;
+    width: 100% !important;
+    text-align: center !important;
+    box-sizing: border-box !important;
+  }
+
+  /* Fix page padding inside setup wizards wrappers */
+  div[style*="padding: 30px 24px"],
+  div[style*="padding:30px 24px"] {
+    padding: 16px 12px !important;
+    box-sizing: border-box !important;
+    width: 100% !important;
+  }
+
+  /* Fix for the OPD grids */
+  .opd-grid-setup {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+

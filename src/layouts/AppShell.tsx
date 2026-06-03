@@ -412,30 +412,32 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
           zIndex: 100,
         }}
       >
-        {currentMenu.map((item) => {
-          const isActive = activeTab === item.label;
-          return (
-            <button
-              key={item.label}
-              onClick={() => setActiveTab(item.label)}
-              style={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
-                background: 'none',
-                border: 'none',
-                color: isActive ? '#4a7cff' : '#94a3b8',
-                cursor: 'pointer',
-                fontSize: '10px',
-                fontWeight: isActive ? 700 : 500,
-                gap: '4px',
-              }}
-            >
-              {item.icon}
-              <span>{item.label}</span>
-            </button>
-          );
-        })}
+        {currentMenu
+          .filter((item) => ['Dashboard', 'My Patients', 'Triage', 'My Profile'].includes(item.label))
+          .map((item) => {
+            const isActive = activeTab === item.label;
+            return (
+              <button
+                key={item.label}
+                onClick={() => setActiveTab(item.label)}
+                style={{
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  background: 'none',
+                  border: 'none',
+                  color: isActive ? '#4a7cff' : '#94a3b8',
+                  cursor: 'pointer',
+                  fontSize: '10px',
+                  fontWeight: isActive ? 700 : 500,
+                  gap: '4px',
+                }}
+              >
+                {item.icon}
+                <span>{item.label}</span>
+              </button>
+            );
+          })}
       </nav>
 
       {/* Embedded Responsive Media Queries Styles */}
