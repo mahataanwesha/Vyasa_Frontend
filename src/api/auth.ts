@@ -16,19 +16,25 @@ export interface AuthResponse {
   success: boolean;
   message: string;
   user?: User;
+  token?: string;
 }
 
-// Global fetch wrapper that automatically passes cookies
+// Global fetch wrapper that automatically passes cookies & Bearer tokens
 const apiRequest = async <T>(
   endpoint: string,
   options: RequestInit = {}
 ): Promise<T> => {
   const url = `${API_URL}${endpoint}`;
   
-  const headers = {
+  const token = localStorage.getItem('token');
+  const headers: Record<string, string> = {
     'Content-Type': 'application/json',
-    ...(options.headers || {}),
+    ...(options.headers as Record<string, string> || {}),
   };
+
+  if (token) {
+    headers['Authorization'] = `Bearer ${token}`;
+  }
 
   const response = await fetch(url, {
     ...options,

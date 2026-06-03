@@ -124,6 +124,9 @@ export const Login: React.FC = () => {
       }
 
       // Populate Zustand store
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+      }
       useAuthStore.setState({ user: data.user, isAuthenticated: true, isLoading: false });
       addToast('Authenticated with Google successfully!', 'success');
     } catch (err: any) {
@@ -206,6 +209,9 @@ export const Login: React.FC = () => {
         throw new Error(data.message || 'OTP validation synchronization failed.');
       }
 
+      if (data.token) {
+        localStorage.setItem('token', data.token);
+      }
       useAuthStore.setState({ user: data.user, isAuthenticated: true, isLoading: false });
       addToast('Authenticated via Phone OTP successfully!', 'success');
     } catch (err: any) {

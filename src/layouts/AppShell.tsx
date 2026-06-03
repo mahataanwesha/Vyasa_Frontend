@@ -13,21 +13,47 @@ import {
   ShieldAlert,
   Calendar,
   Layers,
-  HeartPulse
+  HeartPulse,
+  UserPlus,
+  FileText,
+  FlaskConical,
+  ClipboardList,
+  Globe,
+  User
 } from 'lucide-react';
 import { VyasaLogo } from '../components/Icons';
+import { UserProfile } from '../pages/UserProfile';
+import { MyPatients } from '../pages/MyPatients';
 
 // Role-based menu configuration
 const menus = {
   Admin: [
     { label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
+    { label: 'My Patients', icon: <Users size={20} /> },
+    { label: 'New Patient', icon: <UserPlus size={20} /> },
+    { label: 'Triage', icon: <HeartPulse size={20} /> },
+    { label: 'Prescriptions', icon: <FileText size={20} /> },
+    { label: 'Lab Orders', icon: <FlaskConical size={20} /> },
+    { label: 'Alerts', icon: <Bell size={20} /> },
+    { label: 'Discharge', icon: <LogOut size={20} /> },
+    { label: 'OPD Queue', icon: <ClipboardList size={20} /> },
+    { label: 'Dr. Network', icon: <Globe size={20} /> },
     { label: 'Staff Directory', icon: <Users size={20} /> },
     { label: 'System Logs', icon: <Layers size={20} /> },
+    { label: 'My Profile', icon: <User size={20} /> },
   ],
   Doctor: [
     { label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
-    { label: 'Patients', icon: <Users size={20} /> },
-    { label: 'Vitals Monitoring', icon: <Activity size={20} /> },
+    { label: 'My Patients', icon: <Users size={20} /> },
+    { label: 'New Patient', icon: <UserPlus size={20} /> },
+    { label: 'Triage', icon: <HeartPulse size={20} /> },
+    { label: 'Prescriptions', icon: <FileText size={20} /> },
+    { label: 'Lab Orders', icon: <FlaskConical size={20} /> },
+    { label: 'Alerts', icon: <Bell size={20} /> },
+    { label: 'Discharge', icon: <LogOut size={20} /> },
+    { label: 'OPD Queue', icon: <ClipboardList size={20} /> },
+    { label: 'Dr. Network', icon: <Globe size={20} /> },
+    { label: 'My Profile', icon: <User size={20} /> },
   ],
   Nurse: [
     { label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
@@ -135,33 +161,66 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
         </div>
 
         {/* Topbar Actions */}
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <button style={{ position: 'relative', background: 'none', border: 'none', cursor: 'pointer', color: '#64748b' }}>
-            <Bell size={22} />
-            <span style={{ position: 'absolute', top: '0', right: '0', width: '8px', height: '8px', background: '#f43f5e', borderRadius: '50%' }}></span>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '20px' }}>
+          {/* Warning/Alert Button */}
+          <button style={{ position: 'relative', background: 'none', border: 'none', cursor: 'pointer', color: '#ff4d4d', padding: '4px' }}>
+            <ShieldAlert size={20} />
+            <span style={{ position: 'absolute', top: '0', right: '0', width: '7px', height: '7px', background: '#ff4d4d', borderRadius: '50%' }}></span>
           </button>
 
-          <div style={{ display: 'flex', alignItems: 'center', gap: '10px', borderLeft: '1.5px solid #e2e8f0', paddingLeft: '16px' }}>
-            <div style={{ textAlign: 'right' }}>
-              <p style={{ fontSize: '13px', fontWeight: 700, color: '#0f172a' }}>{user?.fullName}</p>
-              <p style={{ fontSize: '11px', fontWeight: 600, color: '#4a7cff' }}>{user?.role}</p>
+          {/* Bell Notifications Button */}
+          <button style={{ position: 'relative', background: 'none', border: 'none', cursor: 'pointer', color: '#4a7cff', padding: '4px' }}>
+            <Bell size={20} />
+            <span style={{ position: 'absolute', top: '0', right: '0', width: '7px', height: '7px', background: '#4a7cff', borderRadius: '50%' }}></span>
+          </button>
+
+          {/* User Profile Card */}
+          <div
+            onClick={() => setActiveTab('My Profile')}
+            style={{ display: 'flex', alignItems: 'center', gap: '10px', paddingLeft: '8px', cursor: 'pointer' }}
+          >
+            {/* Avatar with Online Status Indicator */}
+            <div style={{ position: 'relative' }}>
+              <div
+                style={{
+                  width: '38px',
+                  height: '38px',
+                  borderRadius: '50%',
+                  background: '#e0e7ff',
+                  color: '#4a7cff',
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  fontWeight: 700,
+                  fontSize: '13px',
+                  border: '1.5px solid #4a7cff',
+                  overflow: 'hidden',
+                }}
+              >
+                {user?.fullName?.charAt(0).toUpperCase() || 'D'}
+              </div>
+              <span
+                style={{
+                  position: 'absolute',
+                  bottom: '1px',
+                  right: '1px',
+                  width: '9px',
+                  height: '9px',
+                  background: '#10b981',
+                  borderRadius: '50%',
+                  border: '1.5px solid #ffffff',
+                }}
+              />
             </div>
-            <div
-              style={{
-                width: '38px',
-                height: '38px',
-                borderRadius: '50%',
-                background: '#eef2ff',
-                color: '#4a7cff',
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: 'center',
-                fontWeight: 700,
-                fontSize: '14px',
-                border: '1.5px solid #4a7cff',
-              }}
-            >
-              {user?.fullName?.charAt(0).toUpperCase()}
+
+            {/* Doctor Info */}
+            <div style={{ textAlign: 'left' }}>
+              <p style={{ fontSize: '13px', fontWeight: 700, color: '#0c1a30', margin: 0, fontFamily: 'Outfit, sans-serif' }}>
+                {user?.fullName.startsWith('Dr.') ? user.fullName : `Dr. ${user?.fullName || 'Arjun Mehta'}`}
+              </p>
+              <p style={{ fontSize: '11px', fontWeight: 600, color: '#64748b', margin: 0 }}>
+                {user?.role === 'Doctor' ? (user?.doctorProfile?.specialization || 'Cardiology') : user?.role}
+              </p>
             </div>
           </div>
         </div>
@@ -260,7 +319,7 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
             background: '#f8fafc',
           }}
         >
-          {children}
+          {activeTab === 'My Profile' ? <UserProfile /> : activeTab === 'My Patients' ? <MyPatients /> : children}
         </main>
 
         {/* RIGHT PANEL - QUICK INFORMATION AND Shift Telemetry */}

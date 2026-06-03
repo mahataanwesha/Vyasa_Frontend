@@ -182,3 +182,19 @@
     border-right-color: var(--border);
   }
 }
+
+@keyframes marquee-scroll {
+  0% {
+    transform: translateX(10%);
+  }
+  100% {
+    transform: translateX(-100%);
+  }
+}
+
+@media (max-width: 900px) {
+  .grid-responsive {
+    grid-template-columns: 1fr !important;
+  }
+}
+

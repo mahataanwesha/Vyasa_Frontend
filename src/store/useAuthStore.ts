@@ -27,6 +27,9 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       const response = await authApi.signup(userData);
       if (response.user) {
+        if (response.token) {
+          localStorage.setItem('token', response.token);
+        }
         set({
           user: response.user,
           isAuthenticated: true,
@@ -46,6 +49,9 @@ export const useAuthStore = create<AuthState>((set) => ({
     try {
       const response = await authApi.login(credentials);
       if (response.user) {
+        if (response.token) {
+          localStorage.setItem('token', response.token);
+        }
         set({
           user: response.user,
           isAuthenticated: true,
@@ -64,9 +70,11 @@ export const useAuthStore = create<AuthState>((set) => ({
     set({ isLoading: true });
     try {
       await authApi.logout();
+      localStorage.removeItem('token');
       set({ user: null, isAuthenticated: false, isLoading: false });
     } catch (err) {
       // Force clear state locally even if server logout request fails
+      localStorage.removeItem('token');
       set({ user: null, isAuthenticated: false, isLoading: false });
     }
   },
@@ -78,9 +86,11 @@ export const useAuthStore = create<AuthState>((set) => ({
       if (response.user) {
         set({ user: response.user, isAuthenticated: true, isLoading: false });
       } else {
+        localStorage.removeItem('token');
         set({ user: null, isAuthenticated: false, isLoading: false });
       }
     } catch (err) {
+      localStorage.removeItem('token');
       set({ user: null, isAuthenticated: false, isLoading: false });
     }
   },
