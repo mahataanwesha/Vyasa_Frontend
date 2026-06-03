@@ -384,6 +384,7 @@ export const HospitalSetupWizard: React.FC = () => {
 
   return (
     <div
+      className="setup-wizard-page"
       style={{
         minHeight: '100vh',
         width: '100vw',

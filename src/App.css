@@ -200,9 +200,12 @@
 
 /* Global Mobile Responsiveness Tweaks */
 @media (max-width: 768px) {
-  /* Automatically stack inline grids on mobile */
-  div[style*="display: grid"],
-  div[style*="display:grid"] {
+  /* Automatically stack all grid divs inside setup cards on mobile */
+  .animate-slide-up div,
+  .setup-wizard-page div,
+  .opd-grid-setup div,
+  .grid-responsive div {
+    /* If the element uses display: grid (or display: inline-grid), force single column */
     grid-template-columns: 1fr !important;
     gap: 12px !important;
   }
@@ -230,12 +233,14 @@
   }
 
   /* Step lines and nodes styling adjustments for narrow viewports */
-  .animate-slide-up div[style*="max-width: 400px"] {
-    max-width: 280px !important;
+  .animate-slide-up div[style*="max-width: 400px"],
+  .animate-slide-up div[style*="max-width:400px"] {
+    max-width: 260px !important;
   }
 
   /* Absolute logout button positioned relatively to flow naturally on mobile */
-  button[style*="position: absolute"][style*="top: 24px"][style*="right: 24px"] {
+  .setup-wizard-page button[style*="position: absolute"],
+  .setup-wizard-page button[style*="position:absolute"] {
     position: static !important;
     margin-top: 10px !important;
     margin-bottom: 20px !important;
@@ -244,12 +249,10 @@
     box-sizing: border-box !important;
   }
 
-  /* Fix page padding inside setup wizards wrappers */
-  div[style*="padding: 30px 24px"],
-  div[style*="padding:30px 24px"] {
+  /* Fix page padding inside setup wizards page wrappers */
+  .setup-wizard-page {
     padding: 16px 12px !important;
     box-sizing: border-box !important;
-    width: 100% !important;
   }
 
   /* Fix for the OPD grids */
@@ -257,5 +260,6 @@
     grid-template-columns: 1fr !important;
   }
 }
+
 
 
