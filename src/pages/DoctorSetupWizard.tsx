@@ -15,7 +15,7 @@ interface Degree {
 }
 
 export const DoctorSetupWizard: React.FC = () => {
-  const { completeDoctorOnboarding } = useAuthStore();
+  const { user, completeDoctorOnboarding } = useAuthStore();
   const { addToast } = useToastStore();
   const navigate = useNavigate();
 
@@ -24,8 +24,8 @@ export const DoctorSetupWizard: React.FC = () => {
   const [showDegreeModal, setShowDegreeModal] = useState(false);
 
   // STEP 1: Personal Information
-  const [title, setTitle] = useState('Dr.');
-  const [fullName, setFullName] = useState('');
+  const [title, setTitle] = useState(user?.role === 'Doctor' ? 'Dr.' : 'Mr.');
+  const [fullName, setFullName] = useState(user?.fullName || '');
   const [dob, setDob] = useState('');
   const [gender, setGender] = useState('');
   const [nationality, setNationality] = useState('Indian');

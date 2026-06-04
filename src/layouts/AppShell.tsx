@@ -24,6 +24,7 @@ import {
 import { VyasaLogo } from '../components/Icons';
 import { UserProfile } from '../pages/UserProfile';
 import { MyPatients } from '../pages/MyPatients';
+import { NewPatient } from '../pages/NewPatient';
 
 // Role-based menu configuration
 const menus = {
@@ -57,8 +58,11 @@ const menus = {
   ],
   Nurse: [
     { label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
-    { label: 'Ward Round', icon: <HeartPulse size={20} /> },
-    { label: 'Vitals Log', icon: <Activity size={20} /> },
+    { label: 'New Patient', icon: <UserPlus size={20} /> },
+    { label: 'Vitals Entry', icon: <Activity size={20} /> },
+    { label: 'Medication MAR', icon: <FileText size={20} /> },
+    { label: 'Nursing Notes', icon: <ClipboardList size={20} /> },
+    { label: 'Triage', icon: <HeartPulse size={20} /> },
   ],
   Pharmacist: [
     { label: 'Dashboard', icon: <LayoutDashboard size={20} /> },
@@ -319,7 +323,15 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
             background: '#f8fafc',
           }}
         >
-          {activeTab === 'My Profile' ? <UserProfile /> : activeTab === 'My Patients' ? <MyPatients /> : children}
+          {activeTab === 'My Profile' ? (
+            <UserProfile />
+          ) : activeTab === 'My Patients' ? (
+            <MyPatients />
+          ) : activeTab === 'New Patient' ? (
+            <NewPatient />
+          ) : (
+            children
+          )}
         </main>
 
         {/* RIGHT PANEL - QUICK INFORMATION AND Shift Telemetry */}

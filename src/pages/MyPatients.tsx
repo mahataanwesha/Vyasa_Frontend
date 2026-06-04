@@ -9,6 +9,7 @@ import {
   MessageSquare,
   Users as UsersIcon
 } from 'lucide-react';
+import { NewPatient } from './NewPatient';
 
 interface Patient {
   id: string;
@@ -31,6 +32,7 @@ export const MyPatients: React.FC = () => {
   const [selectedTab, setSelectedTab] = useState<'IPD' | 'OPD' | 'Discharged' | 'Death'>('IPD');
   const [selectedPatient, setSelectedPatient] = useState<Patient | null>(null);
   const [searchQuery, setSearchQuery] = useState('');
+  const [showPastPatientFlow, setShowPastPatientFlow] = useState(false);
 
   // Sample Mock Patient Database matching mockup values
   const patients: Patient[] = [
@@ -501,6 +503,10 @@ export const MyPatients: React.FC = () => {
     );
   };
 
+  if (showPastPatientFlow) {
+    return <NewPatient initialViewMode="past-patient" onBack={() => setShowPastPatientFlow(false)} />;
+  }
+
   if (selectedPatient) {
     return renderPatientDetail(selectedPatient);
   }
@@ -614,16 +620,19 @@ export const MyPatients: React.FC = () => {
           })}
         </div>
 
-        <button style={{
-          background: '#f8fafc',
-          border: '1px solid #cbd5e1',
-          borderRadius: '10px',
-          padding: '10px 18px',
-          fontSize: '12.5px',
-          fontWeight: 700,
-          color: '#475569',
-          cursor: 'pointer'
-        }}>
+        <button
+          onClick={() => setShowPastPatientFlow(true)}
+          style={{
+            background: '#f8fafc',
+            border: '1px solid #cbd5e1',
+            borderRadius: '10px',
+            padding: '10px 18px',
+            fontSize: '12.5px',
+            fontWeight: 700,
+            color: '#475569',
+            cursor: 'pointer'
+          }}
+        >
           View Past Patient
         </button>
       </div>

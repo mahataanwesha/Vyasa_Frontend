@@ -45,14 +45,19 @@ export const ProtectedRoute: React.FC<ProtectedRouteProps> = ({
     return <Navigate to="/login" replace />;
   }
 
-  // Check if doctor onboarding profile is complete
-  if (user && user.role === 'Doctor' && !user.profileCompleted) {
-    return <Navigate to="/doctor-setup" replace />;
-  }
-
-  // Check if hospital admin onboarding profile is complete
-  if (user && user.role === 'Admin' && !user.profileCompleted) {
-    return <Navigate to="/hospital-setup" replace />;
+  // Generalize redirect to setup wizard if profile is not completed
+  if (user && !user.profileCompleted) {
+    if (user.role === 'Admin') {
+      return <Navigate to="/hospital-setup" replace />;
+    } else if (user.role === 'Nurse') {
+      return <Navigate to="/nurse-setup" replace />;
+    } else if (user.role === 'Pharmacist') {
+      return <Navigate to="/pharmacy-setup" replace />;
+    } else if (user.role === 'Lab Technician') {
+      return <Navigate to="/lab-setup" replace />;
+    } else {
+      return <Navigate to="/doctor-setup" replace />;
+    }
   }
 
   if (allowedRoles && user && !allowedRoles.includes(user.role)) {

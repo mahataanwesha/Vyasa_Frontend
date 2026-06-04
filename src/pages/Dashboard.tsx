@@ -60,30 +60,40 @@ export const Dashboard: React.FC = () => {
                 fontFamily: 'Outfit, sans-serif',
               }}
             >
-              Good Morning, {user?.fullName || 'Dr. Arjun Mehta'}
+              Good Morning, {user?.fullName || (role === 'Nurse' ? 'Priya Sharma' : 'Dr. Arjun Mehta')}
             </h2>
             <p style={{ fontSize: '13px', color: '#64748b', fontWeight: 600, margin: 0 }}>
-              {getFormattedDate()} - {doctorSpecialty}
+              {getFormattedDate()} - {role === 'Nurse' ? 'Nurse' : doctorSpecialty}
             </p>
           </div>
           <button
+            disabled={role === 'Nurse'}
             style={{
-              background: '#0c1a30',
+              background: role === 'Nurse' ? '#c4b5a6' : '#0c1a30',
               color: '#ffffff',
               border: 'none',
               borderRadius: '10px',
               padding: '10px 18px',
               fontSize: '13px',
               fontWeight: 700,
-              cursor: 'pointer',
+              cursor: role === 'Nurse' ? 'not-allowed' : 'pointer',
               display: 'flex',
               alignItems: 'center',
               gap: '6px',
               transition: 'all 0.2s',
-              boxShadow: '0 4px 12px rgba(12, 26, 48, 0.2)',
+              boxShadow: role === 'Nurse' ? 'none' : '0 4px 12px rgba(12, 26, 48, 0.2)',
+              opacity: role === 'Nurse' ? 0.8 : 1,
             }}
-            onMouseOver={(e) => (e.currentTarget.style.background = '#1a3154')}
-            onMouseOut={(e) => (e.currentTarget.style.background = '#0c1a30')}
+            onMouseOver={(e) => {
+              if (role !== 'Nurse') {
+                e.currentTarget.style.background = '#1a3154';
+              }
+            }}
+            onMouseOut={(e) => {
+              if (role !== 'Nurse') {
+                e.currentTarget.style.background = '#0c1a30';
+              }
+            }}
           >
             <Plus size={16} />
             <span>New Patient</span>
@@ -332,7 +342,7 @@ export const Dashboard: React.FC = () => {
             {/* Pending Tasks */}
             <div style={panelStyle}>
               <div style={panelHeaderStyle}>
-                <h3 style={panelTitleStyle}>Pending Tasks</h3>
+                <h3 style={panelTitleStyle}>{role === 'Nurse' ? 'Referral/Pending Tasks' : 'Pending Tasks'}</h3>
                 <button style={panelActionBtnStyle}>View All</button>
               </div>
 
@@ -360,14 +370,20 @@ export const Dashboard: React.FC = () => {
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                {[
+                {(role === 'Nurse' ? [
+                  { name: 'Rohit Sharma', detail: 'No Complaint', status: 'Referral Pending', color: '#f59e0b', bg: '#fffbeb' },
+                  { name: 'Rohit Sharma', detail: 'No Complaint', status: 'Open', color: '#4a7cff', bg: '#eef2ff' },
+                  { name: 'Rohit Sharma', detail: 'No Complaint', status: 'Lab reports pending', color: '#f97316', bg: '#fff7ed' },
+                  { name: 'Rohit Sharma', detail: 'No Complaint', status: 'Open', color: '#4a7cff', bg: '#eef2ff' },
+                  { name: 'Rohit Sharma', detail: 'No Complaint', status: 'Open', color: '#4a7cff', bg: '#eef2ff' },
+                ] : [
                   { name: 'Rohit Sharma', detail: 'No Complaint', status: 'Pending', color: '#f59e0b', bg: '#fffbeb' },
                   { name: 'Rohit Sharma', detail: 'No Complaint', status: 'Open', color: '#4a7cff', bg: '#eef2ff' },
                   { name: 'Rohit Sharma', detail: 'No Complaint', status: 'Pending', color: '#f59e0b', bg: '#fffbeb' },
                   { name: 'Rohit Sharma', detail: 'No Complaint', status: 'Open', color: '#4a7cff', bg: '#eef2ff' },
                   { name: 'Rohit Sharma', detail: 'No Complaint', status: 'Open', color: '#4a7cff', bg: '#eef2ff' },
-                ]
-                  .filter((t) => tasksTab === 'All' || (tasksTab === 'Pending' && t.status === 'Pending') || (tasksTab === 'Completed' && t.status === 'Open'))
+                ])
+                  .filter((t) => tasksTab === 'All' || (tasksTab === 'Pending' && (t.status === 'Pending' || t.status === 'Referral Pending' || t.status === 'Lab reports pending')) || (tasksTab === 'Completed' && t.status === 'Open'))
                   .map((t, idx) => (
                     <div
                       key={idx}
