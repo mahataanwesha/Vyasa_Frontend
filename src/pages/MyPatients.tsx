@@ -7,7 +7,8 @@ import {
   Heart,
   Activity,
   MessageSquare,
-  Users as UsersIcon
+  Users as UsersIcon,
+  Check
 } from 'lucide-react';
 import { NewPatient } from './NewPatient';
 
@@ -26,6 +27,13 @@ interface Patient {
   phone: string;
   bloodGroup: string;
   allergies: string;
+  height?: string;
+  weight?: string;
+  bmi?: string;
+  address?: string;
+  pincode?: string;
+  diseases?: string[];
+  otherDisease?: string;
 }
 
 export const MyPatients: React.FC = () => {
@@ -34,8 +42,50 @@ export const MyPatients: React.FC = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showPastPatientFlow, setShowPastPatientFlow] = useState(false);
 
+  const [showAddNewPatient, setShowAddNewPatient] = useState(false);
+
+  // Form states
+  const [newName, setNewName] = useState('');
+  const [newAge, setNewAge] = useState('');
+  const [newSex, setNewSex] = useState('Male');
+  const [newPhone, setNewPhone] = useState('');
+  const [newHeight, setNewHeight] = useState('');
+  const [newWeight, setNewWeight] = useState('');
+  const [newBmi, setNewBmi] = useState('');
+  const [newAddress, setNewAddress] = useState('');
+  const [newPincode, setNewPincode] = useState('');
+  const [selectedDiseases, setSelectedDiseases] = useState<string[]>([]);
+  const [otherDisease, setOtherDisease] = useState('');
+
+  const calculateBmi = (heightCm: string, weightKg: string) => {
+    const h = parseFloat(heightCm);
+    const w = parseFloat(weightKg);
+    if (h > 0 && w > 0) {
+      const heightM = h / 100;
+      const bmiVal = w / (heightM * heightM);
+      return bmiVal.toFixed(1);
+    }
+    return '';
+  };
+
+  const handleHeightChange = (val: string) => {
+    setNewHeight(val);
+    setNewBmi(calculateBmi(val, newWeight));
+  };
+
+  const handleWeightChange = (val: string) => {
+    setNewWeight(val);
+    setNewBmi(calculateBmi(newHeight, val));
+  };
+
+  const diseasesList = [
+    'Diabetes', 'Hypertension', 'Asthma', 'COPD', 'Heart Disease',
+    'Chronic Kidney Disease', 'Liver Disease', 'Epilepsy', 'Thyroid Disorder',
+    'Cancer', 'HIV/AIDS', 'Tuberculosis', 'Stroke', 'Obesity', 'Arthritis'
+  ];
+
   // Sample Mock Patient Database matching mockup values
-  const patients: Patient[] = [
+  const [patients, setPatients] = useState<Patient[]>([
     {
       id: 'p1',
       name: 'Rohit Sharma',
@@ -246,7 +296,7 @@ export const MyPatients: React.FC = () => {
       bloodGroup: 'A+',
       allergies: 'None Known'
     }
-  ];
+  ]);
 
   const filteredPatients = patients
     .filter(p => p.type === selectedTab)
@@ -381,9 +431,30 @@ export const MyPatients: React.FC = () => {
                   <span style={infoLabelStyle}>Insurance</span>
                   <div style={infoValueStyle}>--</div>
                 </div>
+                <div style={infoItemStyle}>
+                  <span style={infoLabelStyle}>Height</span>
+                  <div style={infoValueStyle}>{patient.height ? `${patient.height} cm` : '--'}</div>
+                </div>
+                <div style={infoItemStyle}>
+                  <span style={infoLabelStyle}>Weight</span>
+                  <div style={infoValueStyle}>{patient.weight ? `${patient.weight} kg` : '--'}</div>
+                </div>
+                <div style={infoItemStyle}>
+                  <span style={infoLabelStyle}>BMI</span>
+                  <div style={infoValueStyle}>{patient.bmi || '--'}</div>
+                </div>
+                <div style={{ ...infoItemStyle, gridColumn: 'span 2' }}>
+                  <span style={infoLabelStyle}>Chronic Conditions</span>
+                  <div style={{ ...infoValueStyle, color: '#ef4444' }}>
+                    {patient.diseases && patient.diseases.length > 0 ? patient.diseases.join(', ') : 'None'}
+                    {patient.otherDisease ? ` (Other: ${patient.otherDisease})` : ''}
+                  </div>
+                </div>
                 <div style={{ ...infoItemStyle, gridColumn: 'span 2' }}>
                   <span style={infoLabelStyle}>Address</span>
-                  <div style={infoValueStyle}>--</div>
+                  <div style={infoValueStyle}>
+                    {patient.address ? `${patient.address}${patient.pincode ? `, PIN: ${patient.pincode}` : ''}` : 'Not Provided'}
+                  </div>
                 </div>
               </div>
             </div>
@@ -503,8 +574,219 @@ export const MyPatients: React.FC = () => {
     );
   };
 
+  const renderAddNewPatientForm = () => {
+    const handleSavePatient = (e: React.FormEvent) => {
+      e.preventDefault();
+      if (!newName || !newAge) return;
+
+      const finalDiseases = [...selectedDiseases];
+      if (otherDisease) {
+        finalDiseases.push(otherDisease);
+      }
+
+      const newPatient: Patient = {
+        id: 'p_' + Date.now(),
+        name: newName,
+        ehrId: 'EHR-00' + Math.floor(100 + Math.random() * 900),
+        age: parseInt(newAge),
+        gender: newSex,
+        type: selectedTab, // defaults to selected tab (IPD, OPD, Discharged)
+        location: selectedTab === 'IPD' ? 'Ward/Bed-ICU/A-4' : selectedTab === 'OPD' ? 'OPD' : 'Ward B-5',
+        diagnosis: finalDiseases.length > 0 ? finalDiseases[0] : 'General Assessment',
+        doctor: 'Dr. Arjun Mehta',
+        admittedDate: new Date().toLocaleDateString('en-GB', { day: '2-digit', month: 'short', year: 'numeric' }),
+        admittedTime: new Date().toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' }),
+        phone: newPhone || '5988685544',
+        bloodGroup: 'A+',
+        allergies: 'None Known',
+        
+        // Extended details
+        height: newHeight,
+        weight: newWeight,
+        bmi: newBmi,
+        address: newAddress,
+        pincode: newPincode,
+        diseases: selectedDiseases,
+        otherDisease: otherDisease
+      };
+
+      setPatients([newPatient, ...patients]);
+      setShowAddNewPatient(false);
+
+      // Reset Form Fields
+      setNewName('');
+      setNewAge('');
+      setNewSex('Male');
+      setNewPhone('');
+      setNewHeight('');
+      setNewWeight('');
+      setNewBmi('');
+      setNewAddress('');
+      setNewPincode('');
+      setSelectedDiseases([]);
+      setOtherDisease('');
+    };
+
+    return (
+      <div style={{ padding: '24px', background: '#ffffff', borderRadius: '16px', border: '1px solid #e2e8f0', animation: 'fade-in 0.3s ease' }}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px', marginBottom: '24px', borderBottom: '1px solid #e2e8f0', paddingBottom: '16px' }}>
+          <Plus style={{ color: '#00a99d' }} size={24} />
+          <h3 style={{ fontSize: '20px', fontWeight: 800, color: '#0c1a30', margin: 0, fontFamily: 'Outfit, sans-serif' }}>Patient Information</h3>
+        </div>
+
+        <form onSubmit={handleSavePatient} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          {/* Landscape Layout Grid */}
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr', gap: '20px 24px' }}>
+            <div style={formGroupStyleLocal}>
+              <label style={labelStyleLocal}>FULL NAME <span style={{ color: '#ef4444' }}>*</span></label>
+              <input type="text" placeholder="Patient name" value={newName} onChange={(e) => setNewName(e.target.value)} required style={inputStyleLocal} />
+            </div>
+
+            <div style={formGroupStyleLocal}>
+              <label style={labelStyleLocal}>AGE <span style={{ color: '#ef4444' }}>*</span></label>
+              <input type="number" placeholder="Age" value={newAge} onChange={(e) => setNewAge(e.target.value)} required style={inputStyleLocal} />
+            </div>
+
+            <div style={formGroupStyleLocal}>
+              <label style={labelStyleLocal}>SEX</label>
+              <select value={newSex} onChange={(e) => setNewSex(e.target.value)} style={selectStyleLocal}>
+                <option>Male</option>
+                <option>Female</option>
+                <option>Other</option>
+              </select>
+            </div>
+
+            <div style={formGroupStyleLocal}>
+              <label style={labelStyleLocal}>PHONE</label>
+              <input type="tel" placeholder="10-digit number" value={newPhone} onChange={(e) => setNewPhone(e.target.value)} style={inputStyleLocal} />
+            </div>
+
+            <div style={formGroupStyleLocal}>
+              <label style={labelStyleLocal}>HEIGHT (CM)</label>
+              <input type="number" placeholder="165" value={newHeight} onChange={(e) => handleHeightChange(e.target.value)} style={inputStyleLocal} />
+            </div>
+
+            <div style={formGroupStyleLocal}>
+              <label style={labelStyleLocal}>WEIGHT (KG)</label>
+              <input type="number" placeholder="70" value={newWeight} onChange={(e) => handleWeightChange(e.target.value)} style={inputStyleLocal} />
+            </div>
+
+            <div style={{ ...formGroupStyleLocal, gridColumn: 'span 3' }}>
+              <label style={labelStyleLocal}>BMI (AUTO-CALCULATED)</label>
+              <input type="text" readOnly placeholder="Enter height & weight" value={newBmi ? `${newBmi} (Auto-calculated)` : ''} style={{ ...inputStyleLocal, background: '#f8fafc', fontWeight: 700, color: '#0f172a' }} />
+            </div>
+
+            <div style={{ ...formGroupStyleLocal, gridColumn: 'span 2' }}>
+              <label style={labelStyleLocal}>ADDRESS</label>
+              <input type="text" placeholder="Street / Area" value={newAddress} onChange={(e) => setNewAddress(e.target.value)} style={inputStyleLocal} />
+            </div>
+
+            <div style={formGroupStyleLocal}>
+              <label style={labelStyleLocal}>PINCODE</label>
+              <input type="text" placeholder="6-digit pincode" value={newPincode} onChange={(e) => setNewPincode(e.target.value)} style={inputStyleLocal} />
+            </div>
+          </div>
+
+          {/* Chronic diseases checkboxes in landscape columns */}
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+            <label style={{ ...labelStyleLocal, fontSize: '11px', color: '#64748b', fontWeight: 800 }}>CHRONIC / PRE-EXISTING DISEASES</label>
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr 1fr 1fr 1fr', gap: '12px' }}>
+              {diseasesList.map(disease => {
+                const isChecked = selectedDiseases.includes(disease);
+                return (
+                  <label key={disease} style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    fontSize: '13px',
+                    color: '#334155',
+                    cursor: 'pointer',
+                    background: isChecked ? '#f0fdfa' : '#f8fafc',
+                    padding: '8px 12px',
+                    borderRadius: '8px',
+                    border: isChecked ? '1px solid #00a99d' : '1px solid #e2e8f0',
+                    fontWeight: 600,
+                    transition: 'all 0.15s ease'
+                  }}>
+                    <input
+                      type="checkbox"
+                      checked={isChecked}
+                      onChange={(e) => {
+                        if (e.target.checked) {
+                          setSelectedDiseases([...selectedDiseases, disease]);
+                        } else {
+                          setSelectedDiseases(selectedDiseases.filter(d => d !== disease));
+                        }
+                      }}
+                      style={{ accentColor: '#00a99d' }}
+                    />
+                    <span>{disease}</span>
+                  </label>
+                );
+              })}
+            </div>
+            
+            <div style={{ marginTop: '10px' }}>
+              <input
+                type="text"
+                placeholder="Other (type here)"
+                value={otherDisease}
+                onChange={(e) => setOtherDisease(e.target.value)}
+                style={{ ...inputStyleLocal, width: '100%', maxWidth: '400px' }}
+              />
+            </div>
+          </div>
+
+          {/* Action Buttons Panel */}
+          <div style={{ display: 'flex', gap: '12px', borderTop: '1px solid #e2e8f0', paddingTop: '20px', marginTop: '10px' }}>
+            <button
+              type="submit"
+              style={{
+                background: '#00a99d',
+                color: '#ffffff',
+                border: 'none',
+                borderRadius: '8px',
+                padding: '12px 24px',
+                fontSize: '14px',
+                fontWeight: 700,
+                cursor: 'pointer',
+                display: 'flex',
+                alignItems: 'center',
+                gap: '8px',
+                boxShadow: '0 4px 10px rgba(0, 169, 157, 0.2)'
+              }}
+            >
+              <Check size={16} />
+              <span>Save Consultation</span>
+            </button>
+            <button
+              type="button"
+              onClick={() => setShowAddNewPatient(false)}
+              style={{
+                background: '#f1f5f9',
+                color: '#475569',
+                border: 'none',
+                borderRadius: '8px',
+                padding: '12px 24px',
+                fontSize: '14px',
+                fontWeight: 700,
+                cursor: 'pointer'
+              }}
+            >
+              Cancel
+            </button>
+          </div>
+        </form>
+      </div>
+    );
+  };
+
   if (showPastPatientFlow) {
     return <NewPatient initialViewMode="past-patient" onBack={() => setShowPastPatientFlow(false)} />;
+  }
+
+  if (showAddNewPatient) {
+    return renderAddNewPatientForm();
   }
 
   if (selectedPatient) {
@@ -527,19 +809,22 @@ export const MyPatients: React.FC = () => {
           </p>
         </div>
         <div style={{ display: 'flex', gap: '10px' }}>
-          <button style={{
-            background: '#e0e7ff',
-            color: '#4a7cff',
-            border: 'none',
-            borderRadius: '10px',
-            padding: '10px 18px',
-            fontSize: '13px',
-            fontWeight: 700,
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px'
-          }}>
+          <button
+            onClick={() => setShowAddNewPatient(true)}
+            style={{
+              background: '#e0e7ff',
+              color: '#4a7cff',
+              border: 'none',
+              borderRadius: '10px',
+              padding: '10px 18px',
+              fontSize: '13px',
+              fontWeight: 700,
+              cursor: 'pointer',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '6px'
+            }}
+          >
             <Plus size={16} />
             <span>New Patient</span>
           </button>
@@ -717,11 +1002,24 @@ export const MyPatients: React.FC = () => {
                     marginTop: '4px',
                     textAlign: 'center'
                   }}>
-                    <span style={{ fontSize: '10.5px', color: '#64748b', fontWeight: 700, display: 'block', textTransform: 'uppercase', marginBottom: '4px' }}>Vitals</span>
-                    <span style={{ fontSize: '12px', color: '#94a3b8', fontWeight: 500, fontStyle: 'italic' }}>
-                      {patient.type === 'IPD' && 'No vitals recorded yet. Check back after the next assessment.'}
-                      {patient.type === 'OPD' && 'No Patient Summary. Check back after the next assessment.'}
-                      {patient.type === 'Discharged' && 'No Discharge summary. Check back after the next assessment.'}
+                    <span style={{ fontSize: '10.5px', color: '#64748b', fontWeight: 700, display: 'block', textTransform: 'uppercase', marginBottom: '4px' }}>Vitals & Chronic Info</span>
+                    <span style={{ fontSize: '12px', color: '#475569', fontWeight: 500 }}>
+                      {patient.height || patient.weight || patient.bmi ? (
+                        <span style={{ display: 'block', lineHeight: '1.5' }}>
+                          Height: <strong>{patient.height || '--'} cm</strong> | Weight: <strong>{patient.weight || '--'} kg</strong> | BMI: <strong>{patient.bmi || '--'}</strong>
+                          {patient.diseases && patient.diseases.length > 0 && (
+                            <span style={{ display: 'block', marginTop: '4px', color: '#ef4444', fontWeight: 700 }}>
+                              Chronic: {patient.diseases.join(', ')}
+                            </span>
+                          )}
+                        </span>
+                      ) : (
+                        <span style={{ fontStyle: 'italic', color: '#94a3b8' }}>
+                          {patient.type === 'IPD' && 'No vitals recorded yet. Check back after the next assessment.'}
+                          {patient.type === 'OPD' && 'No Patient Summary. Check back after the next assessment.'}
+                          {patient.type === 'Discharged' && 'No Discharge summary. Check back after the next assessment.'}
+                        </span>
+                      )}
                     </span>
                   </div>
                 </div>
@@ -834,6 +1132,42 @@ const cardActionBtnStyle: React.CSSProperties = {
   alignItems: 'center',
   justifyContent: 'center',
   transition: 'all 0.2s'
+};
+
+const formGroupStyleLocal: React.CSSProperties = {
+  display: 'flex',
+  flexDirection: 'column',
+  gap: '6px'
+};
+
+const labelStyleLocal: React.CSSProperties = {
+  fontSize: '11px',
+  color: '#64748b',
+  fontWeight: 700,
+  textTransform: 'uppercase'
+};
+
+const inputStyleLocal: React.CSSProperties = {
+  padding: '12px 14px',
+  borderRadius: '8px',
+  border: '1.5px solid #cbd5e1',
+  fontSize: '13px',
+  fontWeight: 500,
+  color: '#0c1a30',
+  outline: 'none',
+  background: '#ffffff',
+  transition: 'border-color 0.2s'
+};
+
+const selectStyleLocal: React.CSSProperties = {
+  padding: '12px 14px',
+  borderRadius: '8px',
+  border: '1.5px solid #cbd5e1',
+  fontSize: '13px',
+  fontWeight: 500,
+  color: '#0c1a30',
+  outline: 'none',
+  background: '#ffffff'
 };
 
 export default MyPatients;

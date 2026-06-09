@@ -336,6 +336,51 @@ export const UserProfile: React.FC = () => {
               </div>
             </div>
 
+            {/* Admin (Institutional Owner) Info */}
+            <div style={cardStyle}>
+              <h3 style={sectionTitleStyle}>Admin / Institutional Owner Info</h3>
+              <div style={infoGridStyle}>
+                <div style={infoItemStyle}>
+                  <span style={infoLabelStyle}>Name</span>
+                  <div style={infoValueStyle}><UserIcon size={14} style={iconStyle} /> {profile.adminName || user.fullName}</div>
+                </div>
+                <div style={infoItemStyle}>
+                  <span style={infoLabelStyle}>Age</span>
+                  <div style={infoValueStyle}><Activity size={14} style={iconStyle} /> {profile.adminAge || 'Not Provided'}</div>
+                </div>
+                <div style={infoItemStyle}>
+                  <span style={infoLabelStyle}>Gender</span>
+                  <div style={infoValueStyle}><UserIcon size={14} style={iconStyle} /> {profile.adminGender || 'Not Provided'}</div>
+                </div>
+                <div style={infoItemStyle}>
+                  <span style={infoLabelStyle}>Date of Birth</span>
+                  <div style={infoValueStyle}><Calendar size={14} style={iconStyle} /> {profile.adminDob || 'Not Provided'}</div>
+                </div>
+                <div style={infoItemStyle}>
+                  <span style={infoLabelStyle}>Phone Number</span>
+                  <div style={infoValueStyle}><Phone size={14} style={iconStyle} /> {profile.adminPhone || user.phone || 'Not Provided'}</div>
+                </div>
+                <div style={infoItemStyle}>
+                  <span style={infoLabelStyle}>Email Address</span>
+                  <div style={infoValueStyle}><Mail size={14} style={iconStyle} /> {profile.adminEmail || user.email || 'Not Provided'}</div>
+                </div>
+                <div style={infoItemStyle}>
+                  <span style={infoLabelStyle}>Department</span>
+                  <div style={infoValueStyle}><Briefcase size={14} style={iconStyle} /> {profile.adminDept || 'Not Provided'}</div>
+                </div>
+                <div style={infoItemStyle}>
+                  <span style={infoLabelStyle}>Designation</span>
+                  <div style={infoValueStyle}><Briefcase size={14} style={iconStyle} /> {profile.adminDesignation || 'Not Provided'}</div>
+                </div>
+              </div>
+              <div style={{ borderTop: '1px solid #e2e8f0', marginTop: '16px', paddingTop: '16px' }}>
+                <span style={infoLabelStyle}>Admin Address</span>
+                <div style={{ ...infoValueStyle, marginTop: '4px' }}>
+                  <MapPin size={14} style={iconStyle} /> {profile.adminAddress || 'Not Provided'}
+                </div>
+              </div>
+            </div>
+
             {/* Attached Doctors Directory */}
             <div style={cardStyle}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '16px' }}>
