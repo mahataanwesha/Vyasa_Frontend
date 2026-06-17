@@ -46,6 +46,7 @@ export const Dashboard: React.FC = () => {
       <div style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
         {/* Welcome Greeting Header */}
         <div
+          className="flex-responsive"
           style={{
             display: 'flex',
             justifyContent: 'space-between',
@@ -229,7 +230,7 @@ export const Dashboard: React.FC = () => {
                 <h3 style={panelTitleStyle}>Active IPD Patients</h3>
                 <button style={panelActionBtnStyle}>View All</button>
               </div>
-              <div style={{ overflowX: 'auto' }}>
+              <div className="table-responsive-wrapper">
                 <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '13px' }}>
                   <thead>
                     <tr style={{ borderBottom: '1px solid #f1f5f9', textAlign: 'left' }}>
@@ -265,7 +266,7 @@ export const Dashboard: React.FC = () => {
               </div>
 
               {/* Custom Tabs */}
-              <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', background: '#f8fafc', padding: '4px', borderRadius: '8px', alignSelf: 'flex-start' }}>
+              <div className="tabs-responsive" style={{ display: 'flex', gap: '8px', marginBottom: '16px', background: '#f8fafc', padding: '4px', borderRadius: '8px', alignSelf: 'flex-start' }}>
                 {(['All', 'Waiting', 'Consulting', 'Completed'] as const).map((tab) => (
                   <button
                     key={tab}
@@ -352,7 +353,7 @@ export const Dashboard: React.FC = () => {
               </div>
 
               {/* Tabs */}
-              <div style={{ display: 'flex', gap: '8px', marginBottom: '16px', background: '#f8fafc', padding: '4px', borderRadius: '8px', alignSelf: 'flex-start' }}>
+              <div className="tabs-responsive" style={{ display: 'flex', gap: '8px', marginBottom: '16px', background: '#f8fafc', padding: '4px', borderRadius: '8px', alignSelf: 'flex-start' }}>
                 {(['All', 'Pending', 'Completed'] as const).map((tab) => (
                   <button
                     key={tab}
@@ -599,7 +600,7 @@ export const Dashboard: React.FC = () => {
           <span style={{ fontSize: '14px', fontWeight: 800, color: '#0c1a30', fontFamily: 'Outfit, sans-serif' }}>
             Search Institutuion
           </span>
-          <div style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', alignItems: 'center' }}>
+          <div className="flex-responsive" style={{ display: 'flex', flexWrap: 'wrap', gap: '16px', alignItems: 'center' }}>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', flex: 1, minWidth: '200px' }}>
               <label style={{ fontSize: '11px', color: '#64748b', fontWeight: 700 }}>Name of institution</label>
               <select style={inputStyle}>
