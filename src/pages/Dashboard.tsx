@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '../store/useAuthStore';
+import { useClinicalStore } from '../store/useClinicalStore';
 import {
   Users,
   Activity,
@@ -17,6 +18,12 @@ import {
 export const Dashboard: React.FC = () => {
   const { user } = useAuthStore();
   const role = user?.role || 'Doctor';
+
+  const { activeIPD, opdQueue, liveAlerts, pendingTasks, stats, fetchDashboardData } = useClinicalStore();
+
+  useEffect(() => {
+    fetchDashboardData();
+  }, [fetchDashboardData]);
 
   // State for OPD Queue Tab
   const [opdTab, setOpdTab] = useState<'All' | 'Waiting' | 'Consulting' | 'Completed'>('All');
@@ -144,11 +151,15 @@ export const Dashboard: React.FC = () => {
               color: '#334155',
             }}
           >
-            <span>Coronary Artery Disease - 102 <span style={{ color: '#ef4444' }}>🔴 2.79%</span></span>
-            <span>Hypertension - 102 <span style={{ color: '#10b981' }}>🟢 1.79%</span></span>
-            <span>Hypertension - 102 <span style={{ color: '#10b981' }}>🟢 1.76%</span></span>
-            <span>Diabetes Mellitus - 84 <span style={{ color: '#ef4444' }}>🔴 3.25%</span></span>
-            <span>Chronic Kidney Disease - 19 <span style={{ color: '#10b981' }}>🟢 0.42%</span></span>
+            {liveAlerts.length > 0 ? (
+              liveAlerts.map(alert => (
+                <span key={alert.id}>
+                  {alert.patientName}: {alert.message} <span style={{ color: alert.level === 'critical' ? '#ef4444' : '#f59e0b' }}>{alert.level === 'critical' ? '🔴' : '🟠'}</span>
+                </span>
+              ))
+            ) : (
+              <span>No critical alerts at this time. <span style={{ color: '#10b981' }}>🟢</span></span>
+            )}
           </div>
         </div>
 
@@ -158,7 +169,7 @@ export const Dashboard: React.FC = () => {
           <div style={cardStyle}>
             <div>
               <span style={cardLabelStyle}>Active IPD</span>
-              <h3 style={cardValueStyle}>100</h3>
+              <h3 style={cardValueStyle}>{stats.activeIPDCount}</h3>
               <span style={{ ...cardBadgeStyle, color: '#10b981', background: '#ecfdf5' }}>
                 <TrendingUp size={12} /> 0.5% from yesterday
               </span>
@@ -171,7 +182,7 @@ export const Dashboard: React.FC = () => {
           <div style={cardStyle}>
             <div>
               <span style={cardLabelStyle}>OPD Today</span>
-              <h3 style={cardValueStyle}>23</h3>
+              <h3 style={cardValueStyle}>{stats.opdToday}</h3>
               <span style={{ ...cardBadgeStyle, color: '#10b981', background: '#ecfdf5' }}>
                 <TrendingUp size={12} /> 1.2% from past week
               </span>
@@ -184,7 +195,7 @@ export const Dashboard: React.FC = () => {
           <div style={cardStyle}>
             <div>
               <span style={cardLabelStyle}>Total Patients</span>
-              <h3 style={cardValueStyle}>36</h3>
+              <h3 style={cardValueStyle}>{stats.totalPatients}</h3>
               <span style={{ ...cardBadgeStyle, color: '#10b981', background: '#ecfdf5' }}>
                 <TrendingUp size={12} /> 1.8% from yesterday
               </span>
@@ -229,14 +240,14 @@ export const Dashboard: React.FC = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {['Ramesh Gupta', 'Ramesh Gupta', 'Ramesh Gupta', 'Ramesh Gupta', 'Ramesh Gupta'].map((name, i) => (
-                      <tr key={i} style={{ borderBottom: '1px solid #f8fafc' }}>
-                        <td style={{ padding: '12px 8px', fontWeight: 700, color: '#0f172a' }}>{name}</td>
-                        <td style={{ padding: '12px 8px', color: '#475569' }}>{i % 2 === 0 ? 'Cardiology' : 'ICU'}</td>
-                        <td style={{ padding: '12px 8px', color: '#475569' }}>Bed A-4</td>
+                    {activeIPD.map((patient) => (
+                      <tr key={patient.id} style={{ borderBottom: '1px solid #f8fafc' }}>
+                        <td style={{ padding: '12px 8px', fontWeight: 700, color: '#0f172a' }}>{patient.name}</td>
+                        <td style={{ padding: '12px 8px', color: '#475569' }}>{patient.department}</td>
+                        <td style={{ padding: '12px 8px', color: '#475569' }}>{patient.bed}</td>
                         <td style={{ padding: '12px 8px' }}>
                           <span style={{ background: '#ecfdf5', color: '#10b981', padding: '3px 8px', borderRadius: '12px', fontSize: '11px', fontWeight: 700 }}>
-                            Round
+                            {patient.status}
                           </span>
                         </td>
                       </tr>
@@ -277,14 +288,8 @@ export const Dashboard: React.FC = () => {
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                {[
-                  { num: '01', name: 'Rohit Sharma', status: 'Waiting', color: '#f59e0b', bg: '#fffbeb' },
-                  { num: '02', name: 'Rohit Sharma', status: 'Waiting', color: '#f59e0b', bg: '#fffbeb' },
-                  { num: '03', name: 'Rohit Sharma', status: 'Consulting', color: '#4a7cff', bg: '#eef2ff' },
-                  { num: '04', name: 'Rohit Sharma', status: 'Consulting', color: '#4a7cff', bg: '#eef2ff' },
-                  { num: '05', name: 'Rohit Sharma', status: 'Consulting', color: '#4a7cff', bg: '#eef2ff' },
-                ]
-                  .filter((p) => opdTab === 'All' || p.status === opdTab)
+                {opdQueue
+                  .filter((p) => opdTab === 'All' || p.opdStatus === opdTab)
                   .map((p, idx) => (
                     <div
                       key={idx}
@@ -299,12 +304,12 @@ export const Dashboard: React.FC = () => {
                       }}
                     >
                       <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                        <span style={{ fontSize: '13px', fontWeight: 800, color: '#94a3b8' }}>{p.num}</span>
+                        <span style={{ fontSize: '13px', fontWeight: 800, color: '#94a3b8' }}>{p.queueNumber}</span>
                         <span style={{ fontSize: '13px', fontWeight: 700, color: '#0c1a30' }}>{p.name}</span>
                       </div>
                       <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
                         <span style={{ background: p.bg, color: p.color, fontSize: '11px', fontWeight: 700, padding: '3px 8px', borderRadius: '12px' }}>
-                          {p.status}
+                          {p.opdStatus}
                         </span>
                         <button
                           style={{
@@ -370,19 +375,7 @@ export const Dashboard: React.FC = () => {
               </div>
 
               <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                {(role === 'Nurse' ? [
-                  { name: 'Rohit Sharma', detail: 'No Complaint', status: 'Referral Pending', color: '#f59e0b', bg: '#fffbeb' },
-                  { name: 'Rohit Sharma', detail: 'No Complaint', status: 'Open', color: '#4a7cff', bg: '#eef2ff' },
-                  { name: 'Rohit Sharma', detail: 'No Complaint', status: 'Lab reports pending', color: '#f97316', bg: '#fff7ed' },
-                  { name: 'Rohit Sharma', detail: 'No Complaint', status: 'Open', color: '#4a7cff', bg: '#eef2ff' },
-                  { name: 'Rohit Sharma', detail: 'No Complaint', status: 'Open', color: '#4a7cff', bg: '#eef2ff' },
-                ] : [
-                  { name: 'Rohit Sharma', detail: 'No Complaint', status: 'Pending', color: '#f59e0b', bg: '#fffbeb' },
-                  { name: 'Rohit Sharma', detail: 'No Complaint', status: 'Open', color: '#4a7cff', bg: '#eef2ff' },
-                  { name: 'Rohit Sharma', detail: 'No Complaint', status: 'Pending', color: '#f59e0b', bg: '#fffbeb' },
-                  { name: 'Rohit Sharma', detail: 'No Complaint', status: 'Open', color: '#4a7cff', bg: '#eef2ff' },
-                  { name: 'Rohit Sharma', detail: 'No Complaint', status: 'Open', color: '#4a7cff', bg: '#eef2ff' },
-                ])
+                {pendingTasks
                   .filter((t) => tasksTab === 'All' || (tasksTab === 'Pending' && (t.status === 'Pending' || t.status === 'Referral Pending' || t.status === 'Lab reports pending')) || (tasksTab === 'Completed' && t.status === 'Open'))
                   .map((t, idx) => (
                     <div

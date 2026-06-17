@@ -11,6 +11,7 @@ import { LabTechnicianSetupWizard } from './pages/LabTechnicianSetupWizard';
 import { ProtectedRoute } from './routes/ProtectedRoute';
 import { AppShell } from './layouts/AppShell';
 import { ToastContainer } from './components/Toast/ToastContainer';
+import { SOSOverlay } from './components/SOSOverlay';
 
 export const App: React.FC = () => {
   const { checkAuth, isAuthenticated } = useAuthStore();
@@ -24,6 +25,7 @@ export const App: React.FC = () => {
     <BrowserRouter>
       {/* Reusable slide-in notifications visible across all views */}
       <ToastContainer />
+      <SOSOverlay />
 
       <Routes>
         {/* Public Authentication Screen (Figma Selection Cards + forms) */}
