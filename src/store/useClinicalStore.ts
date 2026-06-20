@@ -62,7 +62,7 @@ interface ClinicalState {
   declineStaffRequest: (id: string) => void;
 }
 
-export const useClinicalStore = create<ClinicalState>((set, get) => ({
+export const useClinicalStore = create<ClinicalState>((set) => ({
   activeIPD: [],
   opdQueue: [],
   liveAlerts: [],

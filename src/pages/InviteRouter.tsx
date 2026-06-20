@@ -1,6 +1,5 @@
 import React, { useEffect } from 'react';
 import { useParams, useSearchParams, useNavigate } from 'react-router-dom';
-import { useAuthStore } from '../store/useAuthStore';
 import { useToastStore } from '../store/useToastStore';
 
 export const InviteRouter: React.FC = () => {

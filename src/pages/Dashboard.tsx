@@ -817,7 +817,7 @@ export const Dashboard: React.FC = () => {
                       <h4 style={{ margin: 0, fontSize: '14px', fontWeight: 800, color: '#0c1a30' }}>{request.name}</h4>
                       <p style={{ margin: '4px 0 0 0', fontSize: '12px', color: '#64748b', fontWeight: 500 }}>
                         <span style={{ background: '#e2e8f0', color: '#334155', padding: '2px 6px', borderRadius: '4px', marginRight: '8px', fontWeight: 700 }}>{request.role}</span>
-                        Phone: {request.phone} • Requested: {new Date(request.requestedAt).toLocaleDateString()}
+                        Phone: {request.phone} • Requested: {new Date(request.timestamp).toLocaleDateString()}
                       </p>
                     </div>
                   </div>
