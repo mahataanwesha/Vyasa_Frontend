@@ -60,6 +60,7 @@ interface ClinicalState {
   submitStaffRequest: (request: Omit<StaffRequest, 'id' | 'timestamp'>) => void;
   acceptStaffRequest: (id: string) => void;
   declineStaffRequest: (id: string) => void;
+  syncStaffRequests: () => void;
 }
 
 export const useClinicalStore = create<ClinicalState>((set) => ({
@@ -127,8 +128,9 @@ export const useClinicalStore = create<ClinicalState>((set) => ({
   acknowledgeSOS: () => set({ sosAlert: null }),
   
   submitStaffRequest: (request) => set((state) => {
+    const existing = JSON.parse(localStorage.getItem('vyasa_pending_requests') || '[]');
     const updated = [
-      ...state.pendingStaffRequests,
+      ...existing,
       {
         ...request,
         id: Math.random().toString(36).substr(2, 9),
@@ -156,5 +158,9 @@ export const useClinicalStore = create<ClinicalState>((set) => ({
     const updated = state.pendingStaffRequests.filter(req => req.id !== id);
     localStorage.setItem('vyasa_pending_requests', JSON.stringify(updated));
     return { pendingStaffRequests: updated };
+  }),
+
+  syncStaffRequests: () => set({
+    pendingStaffRequests: JSON.parse(localStorage.getItem('vyasa_pending_requests') || '[]')
   }),
 }));

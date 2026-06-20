@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { useAuthStore } from './store/useAuthStore';
+import { useClinicalStore } from './store/useClinicalStore';
 import { Login } from './pages/Login';
 import { Dashboard } from './pages/Dashboard';
 import { DoctorSetupWizard } from './pages/DoctorSetupWizard';
@@ -21,6 +22,16 @@ export const App: React.FC = () => {
   useEffect(() => {
     // Validate session on app initialization
     checkAuth();
+
+    // Listen for cross-tab local storage changes for staff requests
+    const handleStorageChange = (e: StorageEvent) => {
+      if (e.key === 'vyasa_pending_requests') {
+        const { syncStaffRequests } = useClinicalStore.getState();
+        syncStaffRequests();
+      }
+    };
+    window.addEventListener('storage', handleStorageChange);
+    return () => window.removeEventListener('storage', handleStorageChange);
   }, [checkAuth]);
 
   return (
