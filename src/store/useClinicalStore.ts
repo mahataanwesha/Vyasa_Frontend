@@ -127,7 +127,7 @@ export const useClinicalStore = create<ClinicalState>((set) => ({
   triggerSOS: (alert: Alert) => set({ sosAlert: alert }),
   acknowledgeSOS: () => set({ sosAlert: null }),
   
-  submitStaffRequest: (request) => set((state) => {
+  submitStaffRequest: (request) => set(() => {
     const existing = JSON.parse(localStorage.getItem('vyasa_pending_requests') || '[]');
     const updated = [
       ...existing,
