@@ -4,6 +4,7 @@ import { useToastStore } from '../store/useToastStore';
 import { useNavigate } from 'react-router-dom';
 import { VyasaLogo } from '../components/Icons';
 import { Check, Upload } from 'lucide-react';
+import { useClinicalStore } from '../store/useClinicalStore';
 
 export const LabTechnicianSetupWizard: React.FC = () => {
   const { user, completeDoctorOnboarding } = useAuthStore();
@@ -50,6 +51,22 @@ export const LabTechnicianSetupWizard: React.FC = () => {
         email: labEmail,
         contactPersonName: labContactPerson,
       };
+
+      const token = localStorage.getItem('vyasa_invite_token');
+      if (token) {
+        const { submitStaffRequest } = useClinicalStore.getState();
+        submitStaffRequest({
+          name: labName,
+          role: 'Labs',
+          phone: labPhone,
+          details: onboardingData
+        });
+        addToast('Your access request has been sent to the Admin for approval!', 'success');
+        localStorage.removeItem('vyasa_invite_token');
+        localStorage.removeItem('vyasa_invite_role');
+        navigate('/login');
+        return;
+      }
 
       // Calls same API to register profileCompleted: true
       await completeDoctorOnboarding(onboardingData);

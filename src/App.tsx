@@ -8,6 +8,8 @@ import { AdminSetupWizard } from './pages/AdminSetupWizard';
 import { NurseSetupWizard } from './pages/NurseSetupWizard';
 import { PharmacistSetupWizard } from './pages/PharmacistSetupWizard';
 import { LabTechnicianSetupWizard } from './pages/LabTechnicianSetupWizard';
+import { ReceptionistSetupWizard } from './pages/ReceptionistSetupWizard';
+import { InviteRouter } from './pages/InviteRouter';
 import { ProtectedRoute } from './routes/ProtectedRoute';
 import { AppShell } from './layouts/AppShell';
 import { ToastContainer } from './components/Toast/ToastContainer';
@@ -34,28 +36,37 @@ export const App: React.FC = () => {
           element={isAuthenticated ? <Navigate to="/" replace /> : <Login />}
         />
 
+        {/* Invite Link Handler */}
+        <Route path="/invite/:role" element={<InviteRouter />} />
+
         {/* Onboarding Wizard for Doctors (Matches Figma panels) */}
         <Route
           path="/doctor-setup"
-          element={isAuthenticated ? <DoctorSetupWizard /> : <Navigate to="/login" replace />}
+          element={<DoctorSetupWizard />}
         />
 
         {/* Onboarding Wizard for Nurses (Matches Figma panels) */}
         <Route
           path="/nurse-setup"
-          element={isAuthenticated ? <NurseSetupWizard /> : <Navigate to="/login" replace />}
+          element={<NurseSetupWizard />}
         />
 
         {/* Onboarding Wizard for Pharmacists (Matches Figma panels) */}
         <Route
           path="/pharmacy-setup"
-          element={isAuthenticated ? <PharmacistSetupWizard /> : <Navigate to="/login" replace />}
+          element={<PharmacistSetupWizard />}
         />
 
         {/* Onboarding Wizard for Lab Technicians (Matches Figma panels) */}
         <Route
           path="/lab-setup"
-          element={isAuthenticated ? <LabTechnicianSetupWizard /> : <Navigate to="/login" replace />}
+          element={<LabTechnicianSetupWizard />}
+        />
+
+        {/* Onboarding Wizard for Receptionists */}
+        <Route
+          path="/receptionist-setup"
+          element={<ReceptionistSetupWizard />}
         />
 
         {/* Onboarding Wizard for Hospitals (Matches Figma panels) */}

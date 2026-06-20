@@ -4,6 +4,7 @@ import { useToastStore } from '../store/useToastStore';
 import { useNavigate } from 'react-router-dom';
 import { VyasaLogo } from '../components/Icons';
 import { MapPin, Plus, X, Search, Check } from 'lucide-react';
+import { useClinicalStore } from '../store/useClinicalStore';
 
 interface Degree {
   degree: string;
@@ -151,6 +152,22 @@ export const DoctorSetupWizard: React.FC = () => {
         consultationFee,
         opdTimings
       };
+
+      const token = localStorage.getItem('vyasa_invite_token');
+      if (token) {
+        const { submitStaffRequest } = useClinicalStore.getState();
+        submitStaffRequest({
+          name: fullName,
+          role: 'Doctor',
+          phone: phone,
+          details: onboardingData
+        });
+        addToast('Your access request has been sent to the Admin for approval!', 'success');
+        localStorage.removeItem('vyasa_invite_token');
+        localStorage.removeItem('vyasa_invite_role');
+        navigate('/login');
+        return;
+      }
 
       await completeDoctorOnboarding(onboardingData);
       addToast('Clinic Onboarding Setup complete!', 'success');

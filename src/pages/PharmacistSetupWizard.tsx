@@ -3,6 +3,7 @@ import { useAuthStore } from '../store/useAuthStore';
 import { useToastStore } from '../store/useToastStore';
 import { useNavigate } from 'react-router-dom';
 import { VyasaLogo } from '../components/Icons';
+import { useClinicalStore } from '../store/useClinicalStore';
 
 export const PharmacistSetupWizard: React.FC = () => {
   const { user, completeDoctorOnboarding } = useAuthStore();
@@ -34,6 +35,22 @@ export const PharmacistSetupWizard: React.FC = () => {
         uploadDoc: pharmUpload,
         pharmacyPhone: pharmNo,
       };
+
+      const token = localStorage.getItem('vyasa_invite_token');
+      if (token) {
+        const { submitStaffRequest } = useClinicalStore.getState();
+        submitStaffRequest({
+          name: pharmName,
+          role: 'Pharmacist',
+          phone: pharmNo,
+          details: onboardingData
+        });
+        addToast('Your access request has been sent to the Admin for approval!', 'success');
+        localStorage.removeItem('vyasa_invite_token');
+        localStorage.removeItem('vyasa_invite_role');
+        navigate('/login');
+        return;
+      }
 
       // Set profileCompleted: true
       await completeDoctorOnboarding(onboardingData);

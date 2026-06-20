@@ -31,6 +31,15 @@ export interface Task {
   bg: string;
 }
 
+export interface StaffRequest {
+  id: string;
+  name: string;
+  role: string;
+  phone: string;
+  timestamp: string;
+  details: any;
+}
+
 interface ClinicalState {
   activeIPD: Patient[];
   opdQueue: Patient[];
@@ -43,13 +52,17 @@ interface ClinicalState {
     discharged: number;
   };
   sosAlert: Alert | null;
+  pendingStaffRequests: StaffRequest[];
 
   fetchDashboardData: () => Promise<void>;
   acknowledgeSOS: () => void;
   triggerSOS: (alert: Alert) => void;
+  submitStaffRequest: (request: Omit<StaffRequest, 'id' | 'timestamp'>) => void;
+  acceptStaffRequest: (id: string) => void;
+  declineStaffRequest: (id: string) => void;
 }
 
-export const useClinicalStore = create<ClinicalState>((set) => ({
+export const useClinicalStore = create<ClinicalState>((set, get) => ({
   activeIPD: [],
   opdQueue: [],
   liveAlerts: [],
@@ -61,6 +74,7 @@ export const useClinicalStore = create<ClinicalState>((set) => ({
     discharged: 0,
   },
   sosAlert: null,
+  pendingStaffRequests: [],
 
   fetchDashboardData: async () => {
     // In a fully integrated app, these would be real API calls.
@@ -77,7 +91,8 @@ export const useClinicalStore = create<ClinicalState>((set) => ({
 
       // If backend returns data, use it; otherwise fallback to structured mock
       // that matches the required Figma/UI layout
-      set({
+      set((state) => ({
+        ...state,
         activeIPD: ipdRes?.data || [
           { id: '1', name: 'Ramesh Gupta', department: 'Cardiology', bed: 'Bed A-4', status: 'Round' },
           { id: '2', name: 'Suresh Kumar', department: 'ICU', bed: 'Bed B-1', status: 'Critical' },
@@ -101,13 +116,8 @@ export const useClinicalStore = create<ClinicalState>((set) => ({
           { id: 't2', name: 'Anita Sharma', detail: 'Neuro Check', status: 'Open', color: '#4a7cff', bg: '#eef2ff' },
           { id: 't3', name: 'Ramesh Gupta', detail: 'ECG Required', status: 'Lab reports pending', color: '#f97316', bg: '#fff7ed' },
         ],
-        stats: statsRes?.data || {
-          totalPatients: 811,
-          opdToday: 23,
-          activeIPDCount: 100,
-          discharged: 45,
-        }
-      });
+        stats: statsRes?.data || state.stats
+      }));
     } catch (e) {
       console.error("Failed to fetch dashboard data", e);
     }
@@ -115,4 +125,28 @@ export const useClinicalStore = create<ClinicalState>((set) => ({
 
   triggerSOS: (alert: Alert) => set({ sosAlert: alert }),
   acknowledgeSOS: () => set({ sosAlert: null }),
+  
+  submitStaffRequest: (request) => set((state) => ({
+    pendingStaffRequests: [
+      ...state.pendingStaffRequests,
+      {
+        ...request,
+        id: Math.random().toString(36).substr(2, 9),
+        timestamp: new Date().toISOString()
+      }
+    ]
+  })),
+
+  acceptStaffRequest: (id) => set((state) => ({
+    pendingStaffRequests: state.pendingStaffRequests.filter(req => req.id !== id),
+    // Increment active staff/patients metric to simulate acceptance
+    stats: {
+      ...state.stats,
+      totalPatients: state.stats.totalPatients + 1
+    }
+  })),
+
+  declineStaffRequest: (id) => set((state) => ({
+    pendingStaffRequests: state.pendingStaffRequests.filter(req => req.id !== id)
+  })),
 }));

@@ -12,14 +12,16 @@ import {
   ChevronRight,
   TrendingUp,
   CheckCircle2,
-  FileText
+  FileText,
+  XCircle,
+  Check
 } from 'lucide-react';
 
 export const Dashboard: React.FC = () => {
   const { user } = useAuthStore();
   const role = user?.role || 'Doctor';
 
-  const { activeIPD, opdQueue, liveAlerts, pendingTasks, stats, fetchDashboardData } = useClinicalStore();
+  const { activeIPD, opdQueue, liveAlerts, pendingTasks, stats, fetchDashboardData, pendingStaffRequests, acceptStaffRequest, declineStaffRequest } = useClinicalStore();
 
   useEffect(() => {
     fetchDashboardData();
@@ -777,6 +779,92 @@ export const Dashboard: React.FC = () => {
                 <span style={{ fontSize: '14px', fontWeight: 700, color: '#f43f5e' }}>Death:- 65</span>
               </div>
             </div>
+          </div>
+        </div>
+
+        {/* Pending Staff Requests Section (Admin) */}
+        <div style={panelStyle}>
+          <div style={panelHeaderStyle}>
+            <h3 style={panelTitleStyle}>Pending Staff Requests</h3>
+            <span style={{ background: '#f1f5f9', color: '#475569', padding: '4px 10px', borderRadius: '12px', fontSize: '11px', fontWeight: 700 }}>
+              {pendingStaffRequests.length} Pending
+            </span>
+          </div>
+
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+            {pendingStaffRequests.length === 0 ? (
+              <p style={{ fontSize: '13px', color: '#64748b', fontWeight: 500, margin: 0 }}>No pending requests at this time.</p>
+            ) : (
+              pendingStaffRequests.map((request) => (
+                <div
+                  key={request.id}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    padding: '16px',
+                    borderRadius: '12px',
+                    background: '#f8fafc',
+                    border: '1px solid #e2e8f0',
+                  }}
+                  className="flex-responsive"
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
+                    <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: '#eef2ff', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+                      <Users size={18} style={{ color: '#4a7cff' }} />
+                    </div>
+                    <div>
+                      <h4 style={{ margin: 0, fontSize: '14px', fontWeight: 800, color: '#0c1a30' }}>{request.name}</h4>
+                      <p style={{ margin: '4px 0 0 0', fontSize: '12px', color: '#64748b', fontWeight: 500 }}>
+                        <span style={{ background: '#e2e8f0', color: '#334155', padding: '2px 6px', borderRadius: '4px', marginRight: '8px', fontWeight: 700 }}>{request.role}</span>
+                        Phone: {request.phone} • Requested: {new Date(request.requestedAt).toLocaleDateString()}
+                      </p>
+                    </div>
+                  </div>
+                  
+                  <div style={{ display: 'flex', gap: '8px', marginTop: '10px' }}>
+                    <button
+                      onClick={() => acceptStaffRequest(request.id)}
+                      style={{
+                        background: '#10b981',
+                        color: '#ffffff',
+                        border: 'none',
+                        borderRadius: '8px',
+                        padding: '8px 16px',
+                        fontSize: '12px',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        transition: 'all 0.2s',
+                      }}
+                    >
+                      <Check size={14} /> Accept
+                    </button>
+                    <button
+                      onClick={() => declineStaffRequest(request.id)}
+                      style={{
+                        background: '#f1f5f9',
+                        color: '#ef4444',
+                        border: '1px solid #e2e8f0',
+                        borderRadius: '8px',
+                        padding: '8px 16px',
+                        fontSize: '12px',
+                        fontWeight: 700,
+                        cursor: 'pointer',
+                        display: 'flex',
+                        alignItems: 'center',
+                        gap: '6px',
+                        transition: 'all 0.2s',
+                      }}
+                    >
+                      <XCircle size={14} /> Decline
+                    </button>
+                  </div>
+                </div>
+              ))
+            )}
           </div>
         </div>
 

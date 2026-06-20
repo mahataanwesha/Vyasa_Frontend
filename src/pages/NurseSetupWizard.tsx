@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { useAuthStore } from '../store/useAuthStore';
 import { useToastStore } from '../store/useToastStore';
+import { useClinicalStore } from '../store/useClinicalStore';
 import { useNavigate } from 'react-router-dom';
 import { VyasaLogo } from '../components/Icons';
 import { Check, Upload } from 'lucide-react';
@@ -63,6 +64,23 @@ export const NurseSetupWizard: React.FC = () => {
         speciality: nurseSpeciality || nurseCurrentType,
         experienceYears: nurseExperienceYears,
       };
+
+      const token = localStorage.getItem('vyasa_invite_token');
+      if (token) {
+        // Invite mode: Submit request
+        const { submitStaffRequest } = useClinicalStore.getState();
+        submitStaffRequest({
+          name: nurseName,
+          role: 'Nurse',
+          phone: nurseMobile,
+          details: onboardingData
+        });
+        addToast('Your access request has been sent to the Admin for approval!', 'success');
+        localStorage.removeItem('vyasa_invite_token');
+        localStorage.removeItem('vyasa_invite_role');
+        navigate('/login');
+        return;
+      }
 
       // Calls same API under the hood to set profileCompleted: true
       await completeDoctorOnboarding(onboardingData);
