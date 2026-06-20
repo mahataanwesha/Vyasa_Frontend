@@ -74,7 +74,7 @@ export const useClinicalStore = create<ClinicalState>((set) => ({
     discharged: 0,
   },
   sosAlert: null,
-  pendingStaffRequests: [],
+  pendingStaffRequests: JSON.parse(localStorage.getItem('vyasa_pending_requests') || '[]'),
 
   fetchDashboardData: async () => {
     // In a fully integrated app, these would be real API calls.
@@ -126,27 +126,35 @@ export const useClinicalStore = create<ClinicalState>((set) => ({
   triggerSOS: (alert: Alert) => set({ sosAlert: alert }),
   acknowledgeSOS: () => set({ sosAlert: null }),
   
-  submitStaffRequest: (request) => set((state) => ({
-    pendingStaffRequests: [
+  submitStaffRequest: (request) => set((state) => {
+    const updated = [
       ...state.pendingStaffRequests,
       {
         ...request,
         id: Math.random().toString(36).substr(2, 9),
         timestamp: new Date().toISOString()
       }
-    ]
-  })),
+    ];
+    localStorage.setItem('vyasa_pending_requests', JSON.stringify(updated));
+    return { pendingStaffRequests: updated };
+  }),
 
-  acceptStaffRequest: (id) => set((state) => ({
-    pendingStaffRequests: state.pendingStaffRequests.filter(req => req.id !== id),
-    // Increment active staff/patients metric to simulate acceptance
-    stats: {
-      ...state.stats,
-      totalPatients: state.stats.totalPatients + 1
-    }
-  })),
+  acceptStaffRequest: (id) => set((state) => {
+    const updated = state.pendingStaffRequests.filter(req => req.id !== id);
+    localStorage.setItem('vyasa_pending_requests', JSON.stringify(updated));
+    return {
+      pendingStaffRequests: updated,
+      // Increment active staff/patients metric to simulate acceptance
+      stats: {
+        ...state.stats,
+        totalPatients: state.stats.totalPatients + 1
+      }
+    };
+  }),
 
-  declineStaffRequest: (id) => set((state) => ({
-    pendingStaffRequests: state.pendingStaffRequests.filter(req => req.id !== id)
-  })),
+  declineStaffRequest: (id) => set((state) => {
+    const updated = state.pendingStaffRequests.filter(req => req.id !== id);
+    localStorage.setItem('vyasa_pending_requests', JSON.stringify(updated));
+    return { pendingStaffRequests: updated };
+  }),
 }));

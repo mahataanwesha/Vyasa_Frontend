@@ -23,6 +23,7 @@ export const DoctorSetupWizard: React.FC = () => {
   // Wizard Flow control
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3>(1);
   const [showDegreeModal, setShowDegreeModal] = useState(false);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   // STEP 1: Personal Information
   const [title, setTitle] = useState(user?.role === 'Doctor' ? 'Dr.' : 'Mr.');
@@ -165,7 +166,7 @@ export const DoctorSetupWizard: React.FC = () => {
         addToast('Your access request has been sent to the Admin for approval!', 'success');
         localStorage.removeItem('vyasa_invite_token');
         localStorage.removeItem('vyasa_invite_role');
-        navigate('/login');
+        setIsSubmitted(true);
         return;
       }
 
@@ -247,6 +248,20 @@ export const DoctorSetupWizard: React.FC = () => {
           transition: 'all 0.35s cubic-bezier(0.16, 1, 0.3, 1)',
         }}
       >
+        {isSubmitted ? (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', padding: '40px 0', textAlign: 'center' }}>
+            <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: '#ecfdf5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Check size={32} style={{ color: '#10b981' }} />
+            </div>
+            <h2 style={{ color: '#0c1a30', fontSize: '24px', fontWeight: 800, fontFamily: 'Outfit, sans-serif', margin: 0 }}>
+              Request Sent Successfully!
+            </h2>
+            <p style={{ color: '#64748b', fontSize: '14px', fontWeight: 500, maxWidth: '400px', margin: 0 }}>
+              Your access request has been sent to the Admin. Please wait for them to approve your request. Once approved, you will be able to access your dashboard.
+            </p>
+          </div>
+        ) : (
+          <>
         {/* Step Progress indicators */}
         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', marginBottom: '32px' }}>
           <h2 style={{ color: '#0c1a30', fontSize: '22px', fontWeight: 700, marginBottom: '20px', fontFamily: 'Outfit, sans-serif' }}>
@@ -722,6 +737,8 @@ export const DoctorSetupWizard: React.FC = () => {
               </div>
             </div>
           </div>
+        )}
+        </>
         )}
       </div>
 

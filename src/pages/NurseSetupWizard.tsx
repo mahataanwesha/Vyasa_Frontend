@@ -13,6 +13,7 @@ export const NurseSetupWizard: React.FC = () => {
 
   // 4-Step wizard flow matching Figma panels
   const [currentStep, setCurrentStep] = useState<1 | 2 | 3 | 4>(1);
+  const [isSubmitted, setIsSubmitted] = useState(false);
 
   // STEP 1: Nurse Personal Information
   const [nurseName, setNurseName] = useState(user?.fullName || '');
@@ -78,7 +79,7 @@ export const NurseSetupWizard: React.FC = () => {
         addToast('Your access request has been sent to the Admin for approval!', 'success');
         localStorage.removeItem('vyasa_invite_token');
         localStorage.removeItem('vyasa_invite_role');
-        navigate('/login');
+        setIsSubmitted(true);
         return;
       }
 
@@ -162,6 +163,20 @@ export const NurseSetupWizard: React.FC = () => {
           </h1>
         </div>
 
+        {isSubmitted ? (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', padding: '40px 0', textAlign: 'center' }}>
+            <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: '#ecfdf5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Check size={32} style={{ color: '#10b981' }} />
+            </div>
+            <h2 style={{ color: '#0c1a30', fontSize: '24px', fontWeight: 800, fontFamily: 'Outfit, sans-serif', margin: 0 }}>
+              Request Sent Successfully!
+            </h2>
+            <p style={{ color: '#64748b', fontSize: '14px', fontWeight: 500, maxWidth: '400px', margin: 0 }}>
+              Your access request has been sent to the Admin. Please wait for them to approve your request. Once approved, you will be able to access your dashboard.
+            </p>
+          </div>
+        ) : (
+          <>
         {/* Step headers */}
         <div style={{ marginBottom: '20px', borderBottom: '1px solid #f1f5f9', paddingBottom: '14px' }}>
           <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
@@ -552,6 +567,8 @@ export const NurseSetupWizard: React.FC = () => {
               </button>
             </div>
           </div>
+        )}
+        </>
         )}
       </div>
     </div>

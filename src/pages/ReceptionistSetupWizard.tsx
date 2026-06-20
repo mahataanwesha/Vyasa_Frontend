@@ -4,6 +4,7 @@ import { useToastStore } from '../store/useToastStore';
 import { useClinicalStore } from '../store/useClinicalStore';
 import { useNavigate } from 'react-router-dom';
 import { VyasaLogo } from '../components/Icons';
+import { Check } from 'lucide-react';
 
 export const ReceptionistSetupWizard: React.FC = () => {
   const { user, completeDoctorOnboarding } = useAuthStore();
@@ -11,6 +12,7 @@ export const ReceptionistSetupWizard: React.FC = () => {
   const navigate = useNavigate();
 
   // Basic info for Receptionist
+  const [isSubmitted, setIsSubmitted] = useState(false);
   const [name, setName] = useState(user?.fullName || '');
   const [mobile, setMobile] = useState(user?.phone || '');
   const [dob, setDob] = useState('');
@@ -47,7 +49,7 @@ export const ReceptionistSetupWizard: React.FC = () => {
         addToast('Your access request has been sent to the Admin for approval!', 'success');
         localStorage.removeItem('vyasa_invite_token');
         localStorage.removeItem('vyasa_invite_role');
-        navigate('/login');
+        setIsSubmitted(true);
         return;
       }
 
@@ -129,6 +131,20 @@ export const ReceptionistSetupWizard: React.FC = () => {
           </h1>
         </div>
 
+        {isSubmitted ? (
+          <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px', padding: '40px 0', textAlign: 'center' }}>
+            <div style={{ width: '64px', height: '64px', borderRadius: '50%', background: '#ecfdf5', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+              <Check size={32} style={{ color: '#10b981' }} />
+            </div>
+            <h2 style={{ color: '#0c1a30', fontSize: '24px', fontWeight: 800, fontFamily: 'Outfit, sans-serif', margin: 0 }}>
+              Request Sent Successfully!
+            </h2>
+            <p style={{ color: '#64748b', fontSize: '14px', fontWeight: 500, maxWidth: '400px', margin: 0 }}>
+              Your access request has been sent to the Admin. Please wait for them to approve your request. Once approved, you will be able to access your dashboard.
+            </p>
+          </div>
+        ) : (
+          <>
         <div style={{ marginBottom: '24px', borderBottom: '1px solid #f1f5f9', paddingBottom: '14px' }}>
           <h2 style={{ color: '#0c1a30', fontSize: '20px', fontWeight: 700, fontFamily: 'Outfit, sans-serif', margin: '0 0 4px 0' }}>
             Receptionist Setup
@@ -222,6 +238,8 @@ export const ReceptionistSetupWizard: React.FC = () => {
             </button>
           </div>
         </div>
+        </>
+        )}
       </div>
     </div>
   );
