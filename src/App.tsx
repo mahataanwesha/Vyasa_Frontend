@@ -30,8 +30,28 @@ export const App: React.FC = () => {
         syncStaffRequests();
       }
     };
+    
+    const handleVisibilityChange = () => {
+      if (!document.hidden) {
+        const { syncStaffRequests } = useClinicalStore.getState();
+        syncStaffRequests();
+      }
+    };
+
+    const handleFocus = () => {
+      const { syncStaffRequests } = useClinicalStore.getState();
+      syncStaffRequests();
+    };
+
     window.addEventListener('storage', handleStorageChange);
-    return () => window.removeEventListener('storage', handleStorageChange);
+    document.addEventListener('visibilitychange', handleVisibilityChange);
+    window.addEventListener('focus', handleFocus);
+    
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+      document.removeEventListener('visibilitychange', handleVisibilityChange);
+      window.removeEventListener('focus', handleFocus);
+    };
   }, [checkAuth]);
 
   return (
