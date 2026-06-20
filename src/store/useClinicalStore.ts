@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import { apiGet } from '../api/client';
+import { useAuthStore } from './useAuthStore';
 
 export interface Patient {
   id: string;
@@ -142,8 +143,45 @@ export const useClinicalStore = create<ClinicalState>((set) => ({
   }),
 
   acceptStaffRequest: (id) => set((state) => {
+    const req = state.pendingStaffRequests.find(r => r.id === id);
     const updated = state.pendingStaffRequests.filter(req => req.id !== id);
     localStorage.setItem('vyasa_pending_requests', JSON.stringify(updated));
+    
+    if (req) {
+      const authState = useAuthStore.getState();
+      if (authState.user && authState.user.hospitalProfile) {
+        const hospitalProfile = { ...authState.user.hospitalProfile };
+        
+        if (req.role === 'Doctor') {
+          hospitalProfile.attachedDoctors = [
+            ...(hospitalProfile.attachedDoctors || []),
+            { 
+              name: req.name, 
+              designation: req.details?.experienceYears ? `${req.details.experienceYears} Years Exp` : 'Consultant', 
+              department: req.details?.specialization || 'General', 
+              degree: req.details?.degrees?.[0]?.degree || 'MBBS', 
+              speciality: req.details?.specialization || 'General' 
+            }
+          ];
+        } else if (req.role === 'Nurse') {
+          hospitalProfile.attachedNurses = [
+            ...(hospitalProfile.attachedNurses || []),
+            { name: req.name, shift: 'Day Shift' }
+          ];
+        } else {
+          hospitalProfile.attachedStaff = [
+            ...(hospitalProfile.attachedStaff || []),
+            { name: req.name, role: req.role }
+          ];
+        }
+        
+        // Optimistically update the backend and local auth state
+        authState.completeHospitalOnboarding(hospitalProfile).catch((e: any) => {
+          console.error('Failed to sync accepted staff to profile', e);
+        });
+      }
+    }
+
     return {
       pendingStaffRequests: updated,
       // Increment active staff/patients metric to simulate acceptance
