@@ -783,7 +783,7 @@ export const Dashboard: React.FC = () => {
         </div>
 
         {/* Pending Staff Requests Section (Admin) */}
-        <div style={panelStyle}>
+        <div id="pending-staff-requests" style={panelStyle}>
           <div style={panelHeaderStyle}>
             <h3 style={panelTitleStyle}>Pending Staff Requests</h3>
             <span style={{ background: '#f1f5f9', color: '#475569', padding: '4px 10px', borderRadius: '12px', fontSize: '11px', fontWeight: 700 }}>

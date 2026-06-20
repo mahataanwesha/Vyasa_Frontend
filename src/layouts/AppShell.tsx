@@ -173,7 +173,18 @@ export const AppShell: React.FC<AppShellProps> = ({ children }) => {
           </button>
 
           {/* Bell Notifications Button */}
-          <button style={{ position: 'relative', background: 'none', border: 'none', cursor: 'pointer', color: '#4a7cff', padding: '4px' }}>
+          <button 
+            onClick={() => {
+              const pendingRequestsSection = document.getElementById('pending-staff-requests');
+              if (pendingRequestsSection) {
+                pendingRequestsSection.scrollIntoView({ behavior: 'smooth', block: 'center' });
+                addToast('Scrolled to pending requests', 'info');
+              } else {
+                addToast('No new notifications', 'info');
+              }
+            }}
+            style={{ position: 'relative', background: 'none', border: 'none', cursor: 'pointer', color: '#4a7cff', padding: '4px' }}
+          >
             <Bell size={20} />
             <span style={{ position: 'absolute', top: '0', right: '0', width: '7px', height: '7px', background: '#4a7cff', borderRadius: '50%' }}></span>
           </button>
